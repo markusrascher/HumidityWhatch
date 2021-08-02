@@ -22,6 +22,7 @@ class TemperatureFragment: Fragment() {
         val textView: TextView = view.findViewById(R.id.text)
 
         viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-        viewModel.getValue().observe(viewLifecycleOwner, { value -> textView.text = value })
+
+        viewModel.getValue().observe(viewLifecycleOwner, { value -> textView.text = value.temp.toString() })
     }
 }

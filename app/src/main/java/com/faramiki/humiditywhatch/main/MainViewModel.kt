@@ -7,12 +7,11 @@ import androidx.lifecycle.ViewModel
 class MainViewModel : ViewModel()
 {
     private var currentindex: Int = 0
-    var dummyData: MutableList<WeatherDataPoint> = createDummyData()
-    private var selectedValue: MutableLiveData<CharSequence> = MutableLiveData()
+    private var dummyData: MutableList<WeatherDataPoint> = createDummyData()
+    private var selectedValue: MutableLiveData<WeatherDataPoint> = MutableLiveData()
 
     fun selectValue() {
-        val filtered = dummyData[currentindex]
-        selectedValue.value = filtered.temp.toString()
+        selectedValue.value = dummyData[currentindex]
         currentindex ++
         if(currentindex == dummyData.size)
         {
@@ -20,7 +19,7 @@ class MainViewModel : ViewModel()
         }
     }
 
-    fun getValue(): LiveData<CharSequence>{
+    fun getValue(): LiveData<WeatherDataPoint>{
         return selectedValue
     }
 
