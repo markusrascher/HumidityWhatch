@@ -6,8 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.faramiki.humiditywhatch.main.MainViewModel
 
 class TemperatureFragment: Fragment() {
+
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.temperature_fragment, container)
@@ -15,7 +20,8 @@ class TemperatureFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val textView: TextView = view.findViewById(R.id.text)
-        textView.setText(R.string.temperature)
-    }
 
+        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+        viewModel.getValue().observe(viewLifecycleOwner, { value -> textView.text = value })
+    }
 }

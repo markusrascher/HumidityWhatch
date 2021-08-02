@@ -1,17 +1,40 @@
 package com.faramiki.humiditywhatch.main
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 
-class MainViewModel(application: Application): AndroidViewModel(application)
+class MainViewModel : ViewModel()
 {
+    private var currentindex: Int = 0
     var dummyData: MutableList<WeatherDataPoint> = createDummyData()
+    private var selectedValue: MutableLiveData<CharSequence> = MutableLiveData()
+
+    fun selectValue() {
+        val filtered = dummyData[currentindex]
+        selectedValue.value = filtered.temp.toString()
+        currentindex ++
+        if(currentindex == dummyData.size)
+        {
+            currentindex = 0
+        }
+    }
+
+    fun getValue(): LiveData<CharSequence>{
+        return selectedValue
+    }
+
+
+
+
+
+    /*
 
     fun getByDate(startDate: Long, endDate: Long): List<WeatherDataPoint> {
         return dummyData.filter { point -> (point.timestamp >= startDate) and (point.timestamp <= endDate) }
     }
 
-
+    */
 
     ////////////////////////////////////////////////////////
     // Dummy Data (Will be replaced by loading from database
