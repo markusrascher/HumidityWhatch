@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">HumidityWhatch</string>
+    <string name="temperature">Temperatur</string>
+    <string name="hum_rel">Rel. Luftfeuchte</string>
 </resources>
