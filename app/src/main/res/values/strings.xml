@@ -2,4 +2,9 @@
     <string name="app_name">HumidityWhatch</string>
     <string name="temperature">Temperatur</string>
     <string name="hum_rel">Rel. Luftfeuchte</string>
+    <string name="define_date_range">Define date range:</string>
+    <string name="from">From:</string>
+    <string name="to">To:</string>
+    <string name="apply">Apply</string>
+    <string name="cancel">Cancel</string>
 </resources>

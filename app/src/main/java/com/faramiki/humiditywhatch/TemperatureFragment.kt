@@ -6,9 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.faramiki.humiditywhatch.main.MainViewModel
 
 class TemperatureFragment: Fragment() {
 
@@ -23,6 +21,6 @@ class TemperatureFragment: Fragment() {
 
         viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
-        viewModel.getValue().observe(viewLifecycleOwner, { value -> textView.text = value.temp.toString() })
+        viewModel.getValue().observe(viewLifecycleOwner, { value -> textView.text = value.tempIn.toString() })
     }
 }

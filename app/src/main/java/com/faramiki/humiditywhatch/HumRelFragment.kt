@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.faramiki.humiditywhatch.main.MainViewModel
 
 class HumRelFragment: Fragment() {
 
@@ -22,7 +21,7 @@ class HumRelFragment: Fragment() {
 
         viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
-        viewModel.getValue().observe(viewLifecycleOwner, { value -> textView.text = value.hum.toString() })
+        viewModel.getValue().observe(viewLifecycleOwner, { value -> textView.text = value.humRIn.toString() })
     }
 
 }
