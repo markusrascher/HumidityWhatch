@@ -6,18 +6,18 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import org.w3c.dom.Text
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import java.util.*
 
+private const val FACTOR_DAYS_TO_MILLISEC = 86400000
 
-class DialogDateSelect(): DialogFragment() {
+class DialogDateSelect : DialogFragment() {
 
     private lateinit var dialogView:View
     private lateinit var mainViewModel: MainViewModel
@@ -25,12 +25,17 @@ class DialogDateSelect(): DialogFragment() {
     // Buttons:
     private lateinit var btnApply: Button
     private lateinit var btnCancel: Button
+    private lateinit var btnSelectDateFrom: ImageView
+    private lateinit var btnSelectDateTo: ImageView
 
     // Date selectors
-    private lateinit var etFrom: EditText
-    private lateinit var etTo: EditText
+    private lateinit var tvDateFrom: TextView
+    private lateinit var tvDateTo: TextView
     private lateinit var datePicker: DatePickerDialog
 
+    // Dates
+    private var dateFromEpochDays: Long = 0L
+    private var dateToEpochDays: Long = 0L
 
 
     override fun onCreateView(
@@ -46,61 +51,82 @@ class DialogDateSelect(): DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-        initButtons()
-        initEditTexts()
-    }
 
-    private fun initButtons()
-    {
+        dateFromEpochDays = mainViewModel.getDateFromEpochDays().value!!
+        dateToEpochDays = mainViewModel.getDateToEpochDays().value!!
+
+        //Views
         btnApply = dialogView.findViewById(R.id.btn_apply)
-        btnCancel = dialogView.findViewById(R.id.btn_cancel)
-
         btnApply.setOnClickListener { applyDates() }
-        btnApply.isEnabled = false
+
+        btnCancel = dialogView.findViewById(R.id.btn_cancel)
         btnCancel.setOnClickListener { dismiss() }
+
+        btnSelectDateFrom = dialogView.findViewById(R.id.iv_select_from)
+        btnSelectDateFrom.setOnClickListener { showDateFromPicker() }
+
+        btnSelectDateTo = dialogView.findViewById(R.id.iv_select_to)
+        btnSelectDateTo.setOnClickListener { showDateToPicker() }
+
+        tvDateFrom = dialogView.findViewById(R.id.tv_date_from_value)
+        tvDateFrom.text = LocalDate.ofEpochDay(dateFromEpochDays).toString()
+
+        tvDateTo = dialogView.findViewById(R.id.tv_date_to_value)
+        tvDateTo.text = LocalDate.ofEpochDay(dateToEpochDays).toString()
     }
 
-    private fun initEditTexts()
-    {
-        etFrom = dialogView.findViewById(R.id.et_date_from)
-        etFrom.setOnClickListener { showDatePicker(etFrom) }
-        etTo = dialogView.findViewById(R.id.et_date_to)
-        etTo.setOnClickListener { showDatePicker(etTo) }
-
-    }
-
-    private fun showDatePicker(targetView:EditText) {
+    private fun showDateFromPicker() {
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
         val day = c.get(Calendar.DAY_OF_MONTH)
 
         datePicker = DatePickerDialog(requireActivity(),
-            { _, year, monthOfYear, dayOfMonth
-                -> setDateFromPicker(targetView, year.toString() + "-" + "%02d".format(monthOfYear + 1) + "-" + "%02d".format(dayOfMonth))},
+            { _, yy, mm, dd -> setDateFrom(yy, mm, dd)},
             year,
             month,
             day
         )
-        datePicker.datePicker.maxDate = Date().time
+
+        datePicker.datePicker.maxDate = dateToEpochDays * FACTOR_DAYS_TO_MILLISEC
         datePicker.show()
     }
 
-    private fun setDateFromPicker(targetView:EditText, formattedDate: String){
-        targetView.setText(formattedDate)
-        btnApply.isEnabled = (!TextUtils.isEmpty(etFrom.text) && !TextUtils.isEmpty(etTo.text))
+    private fun setDateFrom(year: Int, monthOfYear: Int, dayOfMonth: Int){
+        val dateString = year.toString() + "-" + "%02d".format(monthOfYear + 1) + "-" + "%02d".format(dayOfMonth)
+
+        tvDateFrom.text = dateString
+        dateFromEpochDays = LocalDate.parse(dateString).toEpochDay()
     }
 
-    private fun applyDates()
-    {
-        val dateFromString = etFrom.text.toString()
-        val dateToString = etTo.text.toString()
+    private fun showDateToPicker() {
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
 
-        val dateFromEpochSeconds = LocalDate.parse(dateFromString).toEpochDay() * 24 * 3600
-        val dateToEpochSeconds = (LocalDate.parse(dateToString).toEpochDay() + 1) * 24 * 3600 - 1
+        datePicker = DatePickerDialog(requireActivity(),
+            { _, yy, mm, dd -> setDateTo(yy, mm, dd)},
+            year,
+            month,
+            day
+        )
 
-        mainViewModel.setDateRange(dateFromEpochSeconds, dateToEpochSeconds)
+        datePicker.datePicker.minDate = dateFromEpochDays * FACTOR_DAYS_TO_MILLISEC
+        datePicker.datePicker.maxDate = LocalDate.now().toEpochDay() * FACTOR_DAYS_TO_MILLISEC
+        datePicker.show()
+    }
+
+    private fun setDateTo(year: Int, monthOfYear: Int, dayOfMonth: Int){
+        val dateString = year.toString() + "-" + "%02d".format(monthOfYear + 1) + "-" + "%02d".format(dayOfMonth)
+
+        tvDateTo.text = dateString
+        dateToEpochDays = LocalDate.parse(dateString).toEpochDay()
+    }
+
+
+    private fun applyDates(){
+        mainViewModel.setDateRange(dateFromEpochDays, dateToEpochDays)
         dismiss()
-
     }
 }

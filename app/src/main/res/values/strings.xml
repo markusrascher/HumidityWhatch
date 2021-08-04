@@ -7,4 +7,6 @@
     <string name="to">To:</string>
     <string name="apply">Apply</string>
     <string name="cancel">Cancel</string>
+    <string name="set_a_start_date">Set a start date</string>
+    <string name="set_an_end_date">Set an end date</string>
 </resources>

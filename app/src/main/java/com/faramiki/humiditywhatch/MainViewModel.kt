@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.faramiki.humiditywhatch.entities.WeatherDataPoint
+import java.time.LocalDate
 
 class MainViewModel : ViewModel()
 {
@@ -11,15 +12,28 @@ class MainViewModel : ViewModel()
     private var dummyData: MutableList<WeatherDataPoint> = createDummyData()
     private var selectedValue: MutableLiveData<WeatherDataPoint> = MutableLiveData()
 
-    private var dateFrom: Long = 0L
-    private var dateTo: Long = 0L
+    private var dateFromEpochDays: MutableLiveData<Long> = MutableLiveData(18820)
+    private var dateToEpochDays:  MutableLiveData<Long> = MutableLiveData()
 
-    fun setDateRange(dateFrom: Long, dateTo: Long)
-    {
-        this.dateFrom = dateFrom
-        this.dateTo = dateTo
+    init {
+        dateFromEpochDays.value = 18820 //2021-07-12
+        dateToEpochDays.value = LocalDate.now().toEpochDay()
     }
 
+
+    fun setDateRange(dateFromEpocDays: Long, dateToEpochDays: Long)
+    {
+        this.dateFromEpochDays.value = dateFromEpocDays
+        this.dateToEpochDays.value = dateToEpochDays
+    }
+
+    fun getDateFromEpochDays(): LiveData<Long>{
+        return dateFromEpochDays
+    }
+
+    fun getDateToEpochDays(): LiveData<Long>{
+        return dateToEpochDays
+    }
 
     fun selectValue() {
         selectedValue.value = dummyData[currentindex]
