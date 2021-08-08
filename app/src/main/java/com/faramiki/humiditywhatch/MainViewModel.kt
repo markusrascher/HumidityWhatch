@@ -16,14 +16,18 @@ class MainViewModel : ViewModel()
     private var dateToEpochDays:  MutableLiveData<Long> = MutableLiveData()
 
     init {
-        dateFromEpochDays.value = 18820 //2021-07-12
+        dateFromEpochDays.value = LocalDate.now().toEpochDay()
         dateToEpochDays.value = LocalDate.now().toEpochDay()
     }
 
 
-    fun setDateRange(dateFromEpocDays: Long, dateToEpochDays: Long)
+    fun setDateFromEpochDays(dateFromEpochDays: Long)
     {
-        this.dateFromEpochDays.value = dateFromEpocDays
+        this.dateFromEpochDays.value = dateFromEpochDays
+    }
+
+    fun setDateToEpochDays(dateToEpochDays: Long)
+    {
         this.dateToEpochDays.value = dateToEpochDays
     }
 
