@@ -37,8 +37,6 @@ class MainActivity : AppCompatActivity() {
         val tabLayoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!, TabConfigurationStrategy())
         tabLayoutMediator.attach()
 
-        btnSet = findViewById(R.id.btn_set)
-        btnSet!!.setOnClickListener { viewModel.selectValue() }
 
 
 

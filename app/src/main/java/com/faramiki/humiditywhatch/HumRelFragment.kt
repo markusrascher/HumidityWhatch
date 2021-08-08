@@ -29,7 +29,7 @@ class HumRelFragment: Fragment() {
         viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
 
-        viewModel.getValue().observe(viewLifecycleOwner, { value -> textView.text = value.humRIn.toString() })
+       // viewModel.getValue().observe(viewLifecycleOwner, { value -> textView.text = value.humRIn.toString() })
 
 
     }
