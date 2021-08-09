@@ -9,4 +9,10 @@
     <string name="cancel">Cancel</string>
     <string name="set_a_start_date">Set a start date</string>
     <string name="set_an_end_date">Set an end date</string>
+    <string name="Temp_In">Innentemperatur</string>
+    <string name="Temp_Out">Außentemperatur</string>
+    <string name="TempValue">%1$s °C</string>
+    <string name="DateTimeValue">%1$s Uhr</string>
+    <string name="in">Innen:</string>
+    <string name="out">Außen:</string>
 </resources>

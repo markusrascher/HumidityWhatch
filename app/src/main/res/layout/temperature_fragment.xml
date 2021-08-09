@@ -23,22 +23,4 @@
         app:layout_constraintTop_toBottomOf="@+id/text">
     </com.github.mikephil.charting.charts.LineChart>
 
-    <TextView
-        android:id="@+id/tv_timestamp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="2021-08-08 15Uhr:"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chart_temp" />
-
-    <TextView
-        android:id="@+id/tv_value_in"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="19,5 °C "
-        android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/tv_timestamp"
-        app:layout_constraintTop_toBottomOf="@+id/chart_temp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

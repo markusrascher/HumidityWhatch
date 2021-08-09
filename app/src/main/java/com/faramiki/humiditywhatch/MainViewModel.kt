@@ -68,6 +68,10 @@ class MainViewModel : ViewModel()
         inRangeValues.value = filteredValues
     }
 
+    fun getValue(selectedEpochHour: Long): WeatherDataPoint {
+        return inRangeValues.value!!.find { x -> x.timestamp == selectedEpochHour }!!
+    }
+
     //////////////////////////////////////////////////////////////////
     // Create Dummy data values
     //////////////////////////////////////////////////////////////////
@@ -99,4 +103,6 @@ class MainViewModel : ViewModel()
 
         return dummyData
     }
+
+
 }

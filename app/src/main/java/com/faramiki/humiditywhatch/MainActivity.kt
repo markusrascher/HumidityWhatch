@@ -13,13 +13,8 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var frgSelectDates: Fragment
-
-    var tabLayout: TabLayout? = null
-    var viewPager: ViewPager2? = null
-    var btnSet: Button? = null
-
-
+    private lateinit var tabLayout: TabLayout
+    private lateinit var viewPager: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,16 +28,9 @@ class MainActivity : AppCompatActivity() {
     private fun initViews() {
         tabLayout = findViewById(R.id.tab_layout)
         viewPager = findViewById(R.id.view_pager)
-        viewPager!!.adapter = TabAdapter(this)
-        val tabLayoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!, TabConfigurationStrategy())
+        viewPager.adapter = TabAdapter(this)
+        val tabLayoutMediator = TabLayoutMediator(tabLayout, viewPager, TabConfigurationStrategy())
         tabLayoutMediator.attach()
-
-
-
-
-
-
     }
-
 
 }
