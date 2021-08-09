@@ -8,10 +8,16 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.faramiki.humiditywhatch.utilsTest.toDateStrFromEpochHours
+import com.faramiki.humiditywhatch.utilsTest.toDateTimeStrFromEpochHours
+import com.faramiki.humiditywhatch.utilsTest.toEpochHours
+import com.faramiki.humiditywhatch.utilsTest.toLocalDateTimeFromEpochHours
 import java.time.LocalDate
 import java.util.*
 
 private const val FACTOR_DAYS_TO_MILLISEC = 86400000
+private const val FACTOR_HOURS_TO_MILLISEC = 3600000
+
 
 class DateSelectFragment: Fragment() {
 
@@ -61,10 +67,10 @@ class DateSelectFragment: Fragment() {
         tvDateTo.setOnClickListener { dpTo.show() }
 
         // Add Observers for the dates
-        mainViewModel.getDateFromEpochDays().observe(viewLifecycleOwner, { newValue ->
+        mainViewModel.getRangeFromEpochHours().observe(viewLifecycleOwner, { newValue ->
             updateDateFrom(newValue) })
 
-        mainViewModel.getDateToEpochDays().observe(viewLifecycleOwner, { newValue ->
+        mainViewModel.getRangeToEpochHours().observe(viewLifecycleOwner, { newValue ->
             updateDateTo(newValue) })
 
         // Datepicker
@@ -95,49 +101,46 @@ class DateSelectFragment: Fragment() {
     }
 
     private fun updateDateFrom(newValue: Long) {
-        tvDateFrom.text = LocalDate.ofEpochDay(newValue).toString()
+        tvDateFrom.text = newValue.toDateStrFromEpochHours()
         setViewDependencies()
     }
 
     private fun updateDateTo(newValue: Long) {
-        tvDateTo.text = LocalDate.ofEpochDay(newValue).toString()
+        tvDateTo.text = newValue.toDateStrFromEpochHours()
         setViewDependencies()
     }
 
     private fun setViewDependencies() {
-        val todayEpochDays = LocalDate.now().toEpochDay()
-        val curDateFromEpochDays = mainViewModel.getDateFromEpochDays().value!!
-        val curDateToEpochDays = mainViewModel.getDateToEpochDays().value!!
 
-        dpFrom.datePicker.maxDate = curDateToEpochDays * FACTOR_DAYS_TO_MILLISEC
-        dpTo.datePicker.minDate = curDateFromEpochDays * FACTOR_DAYS_TO_MILLISEC
+        val todayEpochHours = LocalDate.now().toEpochHours()
+        val curRangeFromEpochHours = mainViewModel.getRangeFromEpochHours().value!!
+        val curRangeToEpochHours = mainViewModel.getRangeToEpochHours().value!!
 
-        //TODO: update date pickers current valeus if date was set by earlier / later
-        btnLater.isEnabled  = curDateToEpochDays != todayEpochDays
+        dpFrom.datePicker.maxDate = curRangeToEpochHours * FACTOR_HOURS_TO_MILLISEC
+        dpTo.datePicker.minDate = curRangeFromEpochHours * FACTOR_HOURS_TO_MILLISEC
+
+        //TODO: update date pickers current values if date was set by earlier / later
+        btnLater.isEnabled  = curRangeToEpochHours != todayEpochHours
     }
 
     private fun setDateFrom(year: Int, monthOfYear: Int, dayOfMonth: Int){
-        val dateString = year.toString() + "-" + "%02d".format(monthOfYear + 1) + "-" + "%02d".format(dayOfMonth)
+        val dateString = year.toString() + "-" + "%02d".format(monthOfYear + 1) + "-" + "%02d".format(dayOfMonth) + " 00"
 
-        mainViewModel.setDateFromEpochDays(LocalDate.parse(dateString).toEpochDay())
+        mainViewModel.setRangeFromEpochHours(dateString.toEpochHours())
     }
 
     private fun setDateTo(year: Int, monthOfYear: Int, dayOfMonth: Int){
-        val dateString = year.toString() + "-" + "%02d".format(monthOfYear + 1) + "-" + "%02d".format(dayOfMonth)
+        val dateString = year.toString() + "-" + "%02d".format(monthOfYear + 1) + "-" + "%02d".format(dayOfMonth) + " 00"
 
-        mainViewModel.setDateToEpochDays(LocalDate.parse(dateString).toEpochDay())
+        mainViewModel.setRangeToEpochHours(dateString.toEpochHours())
         setViewDependencies()
     }
 
     private fun reduceFromDateByOneDay(){
-        val curFromDate = LocalDate.ofEpochDay(mainViewModel.getDateFromEpochDays().value!!)
-        val newFromDate = curFromDate.plusDays(-1)
-        mainViewModel.setDateFromEpochDays(newFromDate.toEpochDay())
+        mainViewModel.setRangeFromEpochHours(mainViewModel.getRangeFromEpochHours().value!! - 24)
     }
 
     private fun increaseToDateByOneDay(){
-        val curToDate = LocalDate.ofEpochDay(mainViewModel.getDateToEpochDays().value!!)
-        val newToDate = curToDate.plusDays(1)
-        mainViewModel.setDateToEpochDays(newToDate.toEpochDay())
+        mainViewModel.setRangeToEpochHours(mainViewModel.getRangeToEpochHours().value!! + 24)
     }
 }
