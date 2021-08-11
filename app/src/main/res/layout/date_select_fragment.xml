@@ -7,44 +7,53 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/iv_earlier"
+        android:id="@+id/iv_from_earlier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_left" />
-
-    <ImageView
-        android:id="@+id/iv_select_from"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/set_a_start_date"
-        android:layout_marginStart="8dp"
-        app:layout_constraintStart_toEndOf="@+id/iv_earlier"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/img_cal" />
+        app:srcCompat="@drawable/ic_left"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tv_date_from_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:text="2021-08-01"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/iv_select_from"
+        app:layout_constraintStart_toEndOf="@+id/iv_from_earlier"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
 
+    <ImageView
+        android:id="@+id/iv_from_later"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@+id/tv_date_from_value"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_right"
+        tools:ignore="ContentDescription" />
+
     <TextView
-        android:id="@+id/tv_date_from_value2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="-"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/tv_date_to_value"
-        app:layout_constraintStart_toEndOf="@+id/tv_date_from_value"
+        app:layout_constraintEnd_toStartOf="@+id/iv_to_earlier"
+        app:layout_constraintStart_toEndOf="@+id/iv_from_later"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
+
+
+    <ImageView
+        android:id="@+id/iv_to_earlier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/tv_date_to_value"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_left"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tv_date_to_value"
@@ -52,28 +61,18 @@
         android:layout_height="wrap_content"
         android:text="2021-08-04"
         android:textSize="18sp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/iv_select_to"
+        app:layout_constraintEnd_toStartOf="@+id/iv_to_later"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
 
-
     <ImageView
-        android:id="@+id/iv_select_to"
+        android:id="@+id/iv_to_later"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/set_an_end_date"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/iv_later"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/img_cal" />
-
-    <ImageView
-        android:id="@+id/iv_later"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_right" />
+        app:srcCompat="@drawable/ic_right"
+        tools:ignore="ContentDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

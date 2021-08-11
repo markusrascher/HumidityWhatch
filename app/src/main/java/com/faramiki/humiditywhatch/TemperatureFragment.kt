@@ -5,11 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.faramiki.humiditywhatch.entities.WeatherDataPoint
 import com.faramiki.humiditywhatch.utilsTest.toDateStrFromEpochHours
-import com.faramiki.humiditywhatch.utilsTest.toDateTimeStrFromEpochHours
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
@@ -17,14 +16,13 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 
 class TemperatureFragment: Fragment() {
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var mainViewModel: MainViewModel
     private lateinit var chartTemperature: LineChart
+    private lateinit var currentValuesFragment: View
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -33,14 +31,27 @@ class TemperatureFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
+        currentValuesFragment = view.findViewById(R.id.current_values_fragment)
         chartTemperature = view.findViewById(R.id.chart_temp)
 
         initChart()
         setChartData()
 
-        viewModel.getInRangeValues().observe(viewLifecycleOwner, { setChartData() })
+        mainViewModel.getInRangeValues().observe(viewLifecycleOwner, { setChartData() })
+        mainViewModel.getSelectedValue().observe(viewLifecycleOwner, { newValue -> setCurrentValuesFragmentVisibility(newValue) })
+        mainViewModel.setSelectedValue(null)
+    }
+
+    private fun setCurrentValuesFragmentVisibility(newValue: WeatherDataPoint?) {
+        if ( newValue != null)
+        {
+            currentValuesFragment.visibility = View.VISIBLE
+        }
+        else{
+            currentValuesFragment.visibility = View.INVISIBLE
+        }
     }
 
     private fun initChart() {
@@ -60,11 +71,11 @@ class TemperatureFragment: Fragment() {
         chartTemperature.legend.yOffset = 30f
         chartTemperature.description.isEnabled = false
 
-        chartTemperature.setOnChartValueSelectedListener(ChartValueSelectedListener(viewModel, 1, childFragmentManager))
+        chartTemperature.setOnChartValueSelectedListener(ChartValueSelectedListener(mainViewModel))
     }
 
     private fun setChartData() {
-        val dataPoints = viewModel.getInRangeValues().value!!
+        val dataPoints = mainViewModel.getInRangeValues().value!!
 
         val dataPointsTempIn = dataPoints.map { x -> Entry(x.timestamp.toFloat(), x.tempIn!!)}
         val lineDataSetTempIn = LineDataSet(dataPointsTempIn, getString(R.string.Temp_In))

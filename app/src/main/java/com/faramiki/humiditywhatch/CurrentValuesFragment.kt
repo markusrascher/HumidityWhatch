@@ -6,21 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.faramiki.humiditywhatch.entities.WeatherDataPoint
 import com.faramiki.humiditywhatch.utilsTest.toDateTimeStrFromEpochHours
 
-class DialogCurrentValues : DialogFragment() {
+class CurrentValuesFragment : Fragment() {
 
-    private lateinit var dialogView: View
     private lateinit var mainViewModel: MainViewModel
 
     private lateinit var tvTimestamp: TextView
     private lateinit var tvCurValIn: TextView
     private lateinit var tvCurValOut: TextView
-
-    private lateinit var currentDataPoint: WeatherDataPoint
-    private var activeTab = 1
 
 
     override fun onCreateView(
@@ -28,8 +25,7 @@ class DialogCurrentValues : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        dialogView = inflater.inflate(R.layout.dialog_current_values, container, false)
-        return dialogView
+        return inflater.inflate(R.layout.current_values_fragment, container)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,16 +37,19 @@ class DialogCurrentValues : DialogFragment() {
         tvCurValIn = view.findViewById(R.id.tv_value_in)
         tvCurValOut = view.findViewById(R.id.tv_value_out)
 
-        if (activeTab == 1){
-            tvTimestamp.text = getString(R.string.DateTimeValue, currentDataPoint.timestamp.toDateTimeStrFromEpochHours())
-            tvCurValIn.text = getString(R.string.TempValue, currentDataPoint.tempIn.toString())
-            tvCurValOut.text = getString(R.string.TempValue, currentDataPoint.tempOut.toString())
-        }
+        mainViewModel.getSelectedValue().observe(viewLifecycleOwner, { newValue ->
+            updateValues(newValue) })
     }
 
-    fun updateValues(weatherDataPoint: WeatherDataPoint, activeTab: Int){
-        this.currentDataPoint = weatherDataPoint
-        this.activeTab = activeTab
+    private fun updateValues(weatherDataPoint: WeatherDataPoint?){
+
+        if (weatherDataPoint != null)
+        {
+            tvTimestamp.text = getString(R.string.DateTimeValue, weatherDataPoint.timestamp.toDateTimeStrFromEpochHours())
+            tvCurValIn.text = getString(R.string.TempValue, weatherDataPoint.tempIn.toString())
+            tvCurValOut.text = getString(R.string.TempValue, weatherDataPoint.tempOut.toString())
+        }
+
     }
 
 }

@@ -13,6 +13,7 @@
     <string name="Temp_Out">Außentemperatur</string>
     <string name="TempValue">%1$s °C</string>
     <string name="DateTimeValue">%1$s Uhr</string>
-    <string name="in">Innen:</string>
-    <string name="out">Außen:</string>
+    <string name="in">Innensensor:</string>
+    <string name="out">Außensensor:</string>
+    <string name="NoValueSelected">Kein Wert ausgewählt</string>
 </resources>

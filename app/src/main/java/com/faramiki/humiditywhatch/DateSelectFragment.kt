@@ -9,9 +9,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.faramiki.humiditywhatch.utilsTest.toDateStrFromEpochHours
-import com.faramiki.humiditywhatch.utilsTest.toDateTimeStrFromEpochHours
 import com.faramiki.humiditywhatch.utilsTest.toEpochHours
-import com.faramiki.humiditywhatch.utilsTest.toLocalDateTimeFromEpochHours
 import java.time.LocalDate
 import java.util.*
 
@@ -24,19 +22,16 @@ class DateSelectFragment: Fragment() {
     private lateinit var mainViewModel: MainViewModel
 
     // Buttons:
-    private lateinit var btnSelectDateFrom: ImageView
-    private lateinit var btnSelectDateTo: ImageView
-    private lateinit var btnEarlier: ImageView
-    private lateinit var btnLater: ImageView
+    private lateinit var btnFromEarlier: ImageView
+    private lateinit var btnFromLater: ImageView
+
+    private lateinit var btnToEarlier: ImageView
+    private lateinit var btnToLater: ImageView
+
 
     // Date selectors
     private lateinit var tvDateFrom: TextView
     private lateinit var tvDateTo: TextView
-    private lateinit var datePicker: DatePickerDialog
-
-    // Dates
-    private lateinit var dpFrom: DatePickerDialog
-    private lateinit var dpTo: DatePickerDialog
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -47,24 +42,24 @@ class DateSelectFragment: Fragment() {
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
 
-        //Views and actions
-        btnSelectDateFrom = view.findViewById(R.id.iv_select_from)
-        btnSelectDateFrom.setOnClickListener { dpFrom.show() }
+        // Date earlier / Later
+        btnFromEarlier = view.findViewById(R.id.iv_from_earlier)
+        btnFromEarlier.setOnClickListener { mainViewModel.setRangeFromEpochHours(mainViewModel.getRangeFromEpochHours().value!! - 24) }
 
-        btnSelectDateTo = view.findViewById(R.id.iv_select_to)
-        btnSelectDateTo.setOnClickListener { dpTo.show() }
+        btnFromLater = view.findViewById(R.id.iv_from_later)
+        btnFromLater.setOnClickListener { mainViewModel.setRangeFromEpochHours(mainViewModel.getRangeFromEpochHours().value!! + 24) }
 
-        btnEarlier = view.findViewById(R.id.iv_earlier)
-        btnEarlier.setOnClickListener { reduceFromDateByOneDay() }
+        btnToEarlier = view.findViewById(R.id.iv_to_earlier)
+        btnToEarlier.setOnClickListener { mainViewModel.setRangeToEpochHours(mainViewModel.getRangeToEpochHours().value!! - 24) }
 
-        btnLater = view.findViewById(R.id.iv_later)
-        btnLater.setOnClickListener { increaseToDateByOneDay() }
+        btnToLater = view.findViewById(R.id.iv_to_later)
+        btnToLater.setOnClickListener { mainViewModel.setRangeToEpochHours(mainViewModel.getRangeToEpochHours().value!! + 24) }
 
         tvDateFrom = view.findViewById(R.id.tv_date_from_value)
-        tvDateFrom.setOnClickListener { dpFrom.show() }
+        tvDateFrom.setOnClickListener { showDateFromPicker() }
 
         tvDateTo = view.findViewById(R.id.tv_date_to_value)
-        tvDateTo.setOnClickListener { dpTo.show() }
+        tvDateTo.setOnClickListener { showDateToPicker() }
 
         // Add Observers for the dates
         mainViewModel.getRangeFromEpochHours().observe(viewLifecycleOwner, { newValue ->
@@ -72,57 +67,49 @@ class DateSelectFragment: Fragment() {
 
         mainViewModel.getRangeToEpochHours().observe(viewLifecycleOwner, { newValue ->
             updateDateTo(newValue) })
-
-        // Datepicker
-        initDatePickers()
     }
 
-    private fun initDatePickers() {
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
 
-        dpFrom =  DatePickerDialog(requireActivity(),
+    private fun showDateFromPicker() {
+        val date = LocalDate.parse(tvDateFrom.text)
+
+        val dpFrom = DatePickerDialog(requireActivity(),
             { _, yy, mm, dd -> setDateFrom(yy, mm, dd)},
-            year,
-            month,
-            day
+            date.year,
+            date.monthValue,
+            date.dayOfMonth
         )
 
-        dpTo =  DatePickerDialog(requireActivity(),
+        val curRangeToEpochHours = mainViewModel.getRangeToEpochHours().value!!
+        dpFrom.datePicker.maxDate = curRangeToEpochHours * FACTOR_HOURS_TO_MILLISEC
+        dpFrom.show()
+    }
+
+
+    private fun showDateToPicker() {
+        val date = LocalDate.parse(tvDateTo.text)
+
+        val dpTo = DatePickerDialog(requireActivity(),
             { _, yy, mm, dd -> setDateTo(yy, mm, dd)},
-            year,
-            month,
-            day
+            date.year,
+            date.monthValue,
+            date.dayOfMonth
         )
+
+        val curRangeFromEpochHours = mainViewModel.getRangeFromEpochHours().value!!
 
         dpTo.datePicker.maxDate = LocalDate.now().toEpochDay() * FACTOR_DAYS_TO_MILLISEC
-    }
-
-    private fun updateDateFrom(newValue: Long) {
-        tvDateFrom.text = newValue.toDateStrFromEpochHours()
-        setViewDependencies()
-    }
-
-    private fun updateDateTo(newValue: Long) {
-        tvDateTo.text = newValue.toDateStrFromEpochHours()
-        setViewDependencies()
-    }
-
-    private fun setViewDependencies() {
-
-        val todayEpochHours = LocalDate.now().toEpochHours()
-        val curRangeFromEpochHours = mainViewModel.getRangeFromEpochHours().value!!
-        val curRangeToEpochHours = mainViewModel.getRangeToEpochHours().value!!
-
-        dpFrom.datePicker.maxDate = curRangeToEpochHours * FACTOR_HOURS_TO_MILLISEC
         dpTo.datePicker.minDate = curRangeFromEpochHours * FACTOR_HOURS_TO_MILLISEC
-
-        //TODO: update date pickers current values if date was set by earlier / later
-        btnLater.isEnabled  = curRangeToEpochHours != todayEpochHours
+        dpTo.show()
     }
 
+   
+
+    
+    ////////////////////////
+    // Date Range setters 
+    ////////////////////////
+    
     private fun setDateFrom(year: Int, monthOfYear: Int, dayOfMonth: Int){
         val dateString = year.toString() + "-" + "%02d".format(monthOfYear + 1) + "-" + "%02d".format(dayOfMonth) + " 00"
 
@@ -133,14 +120,32 @@ class DateSelectFragment: Fragment() {
         val dateString = year.toString() + "-" + "%02d".format(monthOfYear + 1) + "-" + "%02d".format(dayOfMonth) + " 00"
 
         mainViewModel.setRangeToEpochHours(dateString.toEpochHours())
-        setViewDependencies()
     }
 
-    private fun reduceFromDateByOneDay(){
-        mainViewModel.setRangeFromEpochHours(mainViewModel.getRangeFromEpochHours().value!! - 24)
+
+    ////////////////////////
+    // Date Range observers 
+    ////////////////////////
+    private fun updateDateFrom(newValue: Long) {
+        tvDateFrom.text = newValue.toDateStrFromEpochHours()
+        updateViewDependencies()
     }
 
-    private fun increaseToDateByOneDay(){
-        mainViewModel.setRangeToEpochHours(mainViewModel.getRangeToEpochHours().value!! + 24)
+    private fun updateDateTo(newValue: Long) {
+        tvDateTo.text = newValue.toDateStrFromEpochHours()
+        updateViewDependencies()
     }
+
+    private fun updateViewDependencies() {
+
+        val todayEpochHours = LocalDate.now().toEpochHours()
+        val curRangeFromEpochHours = mainViewModel.getRangeFromEpochHours().value!!
+        val curRangeToEpochHours = mainViewModel.getRangeToEpochHours().value!!
+
+        btnFromLater.isEnabled = curRangeFromEpochHours < curRangeToEpochHours
+        btnToEarlier.isEnabled = btnFromLater.isEnabled
+        btnToLater.isEnabled  = curRangeToEpochHours < todayEpochHours
+    }
+    
+    
 }

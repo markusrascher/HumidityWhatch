@@ -20,8 +20,10 @@ class MainViewModel : ViewModel()
 
     //Weather data points in range
     private var inRangeValues: MutableLiveData<List<WeatherDataPoint>> = MutableLiveData()
+    private var selectedValue: MutableLiveData<WeatherDataPoint?> = MutableLiveData()
 
     // Dummy data points
+
     private var dummyData: List<WeatherDataPoint> = createDummyData()
 
     init {
@@ -64,19 +66,27 @@ class MainViewModel : ViewModel()
 
     private fun setInRangeValues() {
 
-        val filteredValues = dummyData.filter { x -> x.timestamp in rangeFromEpochHours.value!! until rangeToEpochHours.value!! }
+        val filteredValues = dummyData.filter { x -> x.timestamp in rangeFromEpochHours.value!! until rangeToEpochHours.value!! + 24 }
         inRangeValues.value = filteredValues
     }
 
-    fun getValue(selectedEpochHour: Long): WeatherDataPoint {
-        return inRangeValues.value!!.find { x -> x.timestamp == selectedEpochHour }!!
+
+    fun setSelectedValue(selectedEpochHour: Long?){
+        if(selectedEpochHour != null){
+            selectedValue.value = inRangeValues.value!!.find { x -> x.timestamp == selectedEpochHour }!!
+        }
+        else{
+            selectedValue.value = null
+        }
+    }
+
+    fun getSelectedValue(): LiveData<WeatherDataPoint?>{
+        return selectedValue
     }
 
     //////////////////////////////////////////////////////////////////
     // Create Dummy data values
     //////////////////////////////////////////////////////////////////
-
-
     private fun createDummyData(): List<WeatherDataPoint> {
         val dummyData: MutableList<WeatherDataPoint> = mutableListOf()
 
