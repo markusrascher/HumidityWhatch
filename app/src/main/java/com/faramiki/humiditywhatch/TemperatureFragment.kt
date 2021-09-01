@@ -37,11 +37,18 @@ class TemperatureFragment: Fragment() {
         chartTemperature = view.findViewById(R.id.chart_temp)
 
         initChart()
-        setChartData()
-
-        mainViewModel.getInRangeValues().observe(viewLifecycleOwner, { setChartData() })
+        mainViewModel.getWeatherData().observe(viewLifecycleOwner, { setChartData() })
         mainViewModel.getSelectedValue().observe(viewLifecycleOwner, { newValue -> setCurrentValuesFragmentVisibility(newValue) })
         mainViewModel.setSelectedValue(null)
+
+
+        // Add Observers for the dates
+        mainViewModel.getRangeFromEpochHours().observe(viewLifecycleOwner, { newValue ->
+            updateDateFrom(newValue) })
+
+        mainViewModel.getRangeToEpochHours().observe(viewLifecycleOwner, { newValue ->
+            updateDateTo(newValue) })
+
     }
 
     private fun setCurrentValuesFragmentVisibility(newValue: WeatherDataPoint?) {
@@ -65,7 +72,8 @@ class TemperatureFragment: Fragment() {
         chartTemperature.axisLeft.axisMinimum = 0f
         chartTemperature.axisLeft.axisMaximum = 40f
 
-        chartTemperature.axisRight.isEnabled = false
+        chartTemperature.axisRight.axisMinimum = 0f
+        chartTemperature.axisRight.axisMaximum = 40f
 
         chartTemperature.setExtraOffsets(5f,5f,5f,20f)
         chartTemperature.legend.yOffset = 30f
@@ -75,13 +83,17 @@ class TemperatureFragment: Fragment() {
     }
 
     private fun setChartData() {
-        val dataPoints = mainViewModel.getInRangeValues().value!!
+        val epochHoursFrom = mainViewModel.getRangeFromEpochHours().value!!
+        val epochHoursTo = mainViewModel.getRangeToEpochHours().value!!
+        val allLoadedDataPoints: List<WeatherDataPoint> = mainViewModel.getWeatherData().value!!
 
-        val dataPointsTempIn = dataPoints.map { x -> Entry(x.timestamp.toFloat(), x.tempIn!!)}
+        val shownDataPoints = allLoadedDataPoints.filter { it.timestamp in epochHoursFrom until epochHoursTo }
+
+        val dataPointsTempIn = shownDataPoints.map { x -> Entry(x.timestamp.toFloat(), x.tempIn!!)}
         val lineDataSetTempIn = LineDataSet(dataPointsTempIn, getString(R.string.Temp_In))
         formatLineChart(lineDataSetTempIn, Color.RED)
 
-        val dataPointsTempOut = dataPoints.map { x -> Entry(x.timestamp.toFloat(), x.tempOut!!)}
+        val dataPointsTempOut = shownDataPoints.map { x -> Entry(x.timestamp.toFloat(), x.tempOut!!)}
         val lineDataSetTempOut = LineDataSet(dataPointsTempOut, getString(R.string.Temp_Out))
         formatLineChart(lineDataSetTempOut, Color.BLUE)
 
@@ -105,6 +117,21 @@ class TemperatureFragment: Fragment() {
         lineDataSet.setDrawValues(false)
     }
 
+    private fun updateDateTo(newValue: Long?) {
+        if (newValue != null)
+        {
+            chartTemperature.xAxis.axisMaximum = newValue.toFloat()
+            setChartData()
+        }
+    }
+
+    private fun updateDateFrom(newValue: Long?) {
+        if (newValue != null)
+        {
+            chartTemperature.xAxis.axisMinimum = newValue.toFloat()
+            setChartData()
+        }
+    }
 }
 
 class LineChartXAxisValueFormatter : IndexAxisValueFormatter() {

@@ -41,8 +41,6 @@ class DateSelectFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
-
-        // Date earlier / Later
         btnFromEarlier = view.findViewById(R.id.iv_from_earlier)
         btnFromEarlier.setOnClickListener { mainViewModel.setRangeFromEpochHours(mainViewModel.getRangeFromEpochHours().value!! - 24) }
 
@@ -80,7 +78,7 @@ class DateSelectFragment: Fragment() {
             date.dayOfMonth
         )
 
-        val curRangeToEpochHours = mainViewModel.getRangeToEpochHours().value!!
+        val curRangeToEpochHours = mainViewModel.getRangeToEpochHours().value!! - 23
         dpFrom.datePicker.maxDate = curRangeToEpochHours * FACTOR_HOURS_TO_MILLISEC
         dpFrom.show()
     }
@@ -103,8 +101,6 @@ class DateSelectFragment: Fragment() {
         dpTo.show()
     }
 
-   
-
     
     ////////////////////////
     // Date Range setters 
@@ -119,7 +115,7 @@ class DateSelectFragment: Fragment() {
     private fun setDateTo(year: Int, monthOfYear: Int, dayOfMonth: Int){
         val dateString = year.toString() + "-" + "%02d".format(monthOfYear + 1) + "-" + "%02d".format(dayOfMonth) + " 00"
 
-        mainViewModel.setRangeToEpochHours(dateString.toEpochHours())
+        mainViewModel.setRangeToEpochHours(dateString.toEpochHours() + 23)
     }
 
 
@@ -142,10 +138,8 @@ class DateSelectFragment: Fragment() {
         val curRangeFromEpochHours = mainViewModel.getRangeFromEpochHours().value!!
         val curRangeToEpochHours = mainViewModel.getRangeToEpochHours().value!!
 
-        btnFromLater.isEnabled = curRangeFromEpochHours < curRangeToEpochHours
+        btnFromLater.isEnabled = curRangeFromEpochHours < (curRangeToEpochHours - 23)
         btnToEarlier.isEnabled = btnFromLater.isEnabled
         btnToLater.isEnabled  = curRangeToEpochHours < todayEpochHours
     }
-    
-    
 }

@@ -25,6 +25,9 @@ fun Long.toDateStrFromEpochHours(): String {
     return date.toString()
 }
 
+fun Long.toLocalDateFromEpochHours(): LocalDate {
+    return LocalDate.ofEpochDay(this / 24)
+}
 
 fun Long.toLocalDateTimeFromEpochHours(): LocalDateTime {
     return LocalDateTime.ofEpochSecond(
