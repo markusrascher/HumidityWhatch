@@ -12,8 +12,11 @@
     <string name="Temp_In">Innentemperatur</string>
     <string name="Temp_Out">Außentemperatur</string>
     <string name="TempValue">%1$s °C</string>
+    <string name="HumRelValue">%1$s Prozent</string>
     <string name="DateTimeValue">%1$s Uhr</string>
     <string name="in">Innensensor:</string>
     <string name="out">Außensensor:</string>
     <string name="NoValueSelected">Kein Wert ausgewählt</string>
+    <string name="Hum_rel_In">Relative Luftfeuchte innen</string>
+    <string name="Hum_rel_Out">Relative Luftfeuchte außen</string>
 </resources>

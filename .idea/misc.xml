@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Daten/Luefter_Keller_App/HumidityWhatch/app/src/main/res/layout/activity_main.xml" value="0.20520833333333333" />
+        <entry key="..\:/Daten/Luefter_Keller_App/HumidityWhatch/app/src/main/res/layout/chart_fragment.xml" value="0.5" />
         <entry key="..\:/Daten/Luefter_Keller_App/HumidityWhatch/app/src/main/res/layout/current_values_fragment.xml" value="0.20520833333333333" />
         <entry key="..\:/Daten/Luefter_Keller_App/HumidityWhatch/app/src/main/res/layout/date_select_fragment.xml" value="0.20520833333333333" />
         <entry key="..\:/Daten/Luefter_Keller_App/HumidityWhatch/app/src/main/res/layout/hum_rel_fragment.xml" value="0.20520833333333333" />

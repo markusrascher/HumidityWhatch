@@ -1,89 +1,25 @@
-package com.faramiki.humiditywhatch
+package com.faramiki.humiditywhatch.ui
 
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import com.faramiki.humiditywhatch.R
 import com.faramiki.humiditywhatch.entities.WeatherDataPoint
-import com.faramiki.humiditywhatch.ui.ChartValueSelectedListener
-import com.faramiki.humiditywhatch.utilsTest.toDateStrFromEpochHours
-import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
+import com.faramiki.humiditywhatch.utilsTest.toDateTimeStrFromEpochHours
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
-class TemperatureFragment: Fragment() {
-
-    private lateinit var mainViewModel: MainViewModel
-    private lateinit var chartTemperature: LineChart
-    private lateinit var currentValuesFragment: View
-
+class TemperatureFragment: WeatherDataBaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.temperature_fragment, container)
+        return inflater.inflate(R.layout.chart_fragment, container)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-
-        currentValuesFragment = view.findViewById(R.id.current_values_fragment)
-        chartTemperature = view.findViewById(R.id.chart_temp)
-
-        initChart()
-        mainViewModel.getWeatherData().observe(viewLifecycleOwner, { setChartData() })
-        mainViewModel.getSelectedValue().observe(viewLifecycleOwner, { newValue -> setCurrentValuesFragmentVisibility(newValue) })
-        mainViewModel.setSelectedValue(null)
-
-
-        // Add Observers for the dates
-        mainViewModel.getRangeFromEpochHours().observe(viewLifecycleOwner, { newValue ->
-            updateDateFrom(newValue) })
-
-        mainViewModel.getRangeToEpochHours().observe(viewLifecycleOwner, { newValue ->
-            updateDateTo(newValue) })
-
-    }
-
-    private fun setCurrentValuesFragmentVisibility(newValue: WeatherDataPoint?) {
-        if ( newValue != null)
-        {
-            currentValuesFragment.visibility = View.VISIBLE
-        }
-        else{
-            currentValuesFragment.visibility = View.INVISIBLE
-        }
-    }
-
-    private fun initChart() {
-
-        chartTemperature.xAxis.valueFormatter = LineChartXAxisValueFormatter()
-        chartTemperature.xAxis.position = XAxis.XAxisPosition.BOTTOM
-        chartTemperature.xAxis.textSize = 12f
-        chartTemperature.xAxis.isGranularityEnabled = true
-        chartTemperature.xAxis.granularity = 24f
-
-        chartTemperature.axisLeft.axisMinimum = 0f
-        chartTemperature.axisLeft.axisMaximum = 40f
-
-        chartTemperature.axisRight.axisMinimum = 0f
-        chartTemperature.axisRight.axisMaximum = 40f
-
-        chartTemperature.setExtraOffsets(5f,5f,5f,20f)
-        chartTemperature.legend.yOffset = 30f
-        chartTemperature.description.isEnabled = false
-
-        chartTemperature.setOnChartValueSelectedListener(ChartValueSelectedListener(mainViewModel))
-    }
-
-    private fun setChartData() {
+    override fun setChartData() {
         val epochHoursFrom = mainViewModel.getRangeFromEpochHours().value!!
         val epochHoursTo = mainViewModel.getRangeToEpochHours().value!!
         val allLoadedDataPoints: List<WeatherDataPoint> = mainViewModel.getWeatherData().value!!
@@ -99,45 +35,31 @@ class TemperatureFragment: Fragment() {
         formatLineChart(lineDataSetTempOut, Color.BLUE)
 
         val lines = mutableListOf<ILineDataSet>(lineDataSetTempIn, lineDataSetTempOut)
-        chartTemperature.data = LineData(lines)
-        chartTemperature.invalidate()
-
+        chartView.data = LineData(lines)
+        chartView.invalidate()
     }
 
-    private fun formatLineChart(lineDataSet: LineDataSet, color: Int){
+    override fun updateCurrentValue(newValue: WeatherDataPoint?) {
 
-        lineDataSet.color = color
-        lineDataSet.fillColor = color
-        lineDataSet.setCircleColor(color)
-        lineDataSet.valueTextSize = 12f
-        lineDataSet.axisDependency = YAxis.AxisDependency.LEFT
-        lineDataSet.setDrawHorizontalHighlightIndicator(false)
 
-        lineDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
-        lineDataSet.cubicIntensity = 0.2f
-        lineDataSet.setDrawValues(false)
-    }
-
-    private fun updateDateTo(newValue: Long?) {
         if (newValue != null)
         {
-            chartTemperature.xAxis.axisMaximum = newValue.toFloat()
-            setChartData()
+            tvCurTimestamp.text = getString(R.string.DateTimeValue, newValue.timestamp.toDateTimeStrFromEpochHours())
+            tvCurValIn.text = getString(R.string.TempValue, newValue.tempIn.toString())
+            tvCurValOut.text = getString(R.string.TempValue, newValue.tempOut.toString())
+        }
+        else {
+            tvCurTimestamp.text = getString(R.string.NoValueSelected)
+            tvCurValIn.text = "---"
+            tvCurValOut.text = "---"
         }
     }
 
-    private fun updateDateFrom(newValue: Long?) {
-        if (newValue != null)
-        {
-            chartTemperature.xAxis.axisMinimum = newValue.toFloat()
-            setChartData()
-        }
-    }
-}
+    override fun setChartYAxis() {
+        chartView.axisLeft.axisMinimum = 0f
+        chartView.axisLeft.axisMaximum = 40f
 
-class LineChartXAxisValueFormatter : IndexAxisValueFormatter() {
-
-    override fun getFormattedValue(value: Float): String {
-        return value.toLong().toDateStrFromEpochHours()
+        chartView.axisRight.axisMinimum = 0f
+        chartView.axisRight.axisMaximum = 40f
     }
 }
