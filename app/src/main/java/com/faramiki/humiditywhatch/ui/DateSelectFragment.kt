@@ -1,17 +1,19 @@
-package com.faramiki.humiditywhatch
+package com.faramiki.humiditywhatch.ui
 
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.faramiki.humiditywhatch.MainViewModel
+import com.faramiki.humiditywhatch.R
 import com.faramiki.humiditywhatch.utilsTest.toDateStrFromEpochHours
 import com.faramiki.humiditywhatch.utilsTest.toEpochHours
 import java.time.LocalDate
-import java.util.*
 
 private const val FACTOR_DAYS_TO_MILLISEC = 86400000
 private const val FACTOR_HOURS_TO_MILLISEC = 3600000

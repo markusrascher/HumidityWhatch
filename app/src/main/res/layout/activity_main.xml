@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/date_select_fragment"
-        android:name="com.faramiki.humiditywhatch.DateSelectFragment"
+        android:name="com.faramiki.humiditywhatch.ui.DateSelectFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -1,5 +1,6 @@
-package com.faramiki.humiditywhatch
+package com.faramiki.humiditywhatch.ui
 
+import com.faramiki.humiditywhatch.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 

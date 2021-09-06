@@ -1,6 +1,6 @@
-package com.faramiki.humiditywhatch
+package com.faramiki.humiditywhatch.ui
 
-import androidx.fragment.app.FragmentManager
+import com.faramiki.humiditywhatch.MainViewModel
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener

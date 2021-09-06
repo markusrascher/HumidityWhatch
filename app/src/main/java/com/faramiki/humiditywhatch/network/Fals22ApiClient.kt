@@ -1,4 +1,4 @@
-package com.faramiki.humiditywhatch
+package com.faramiki.humiditywhatch.network
 
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient

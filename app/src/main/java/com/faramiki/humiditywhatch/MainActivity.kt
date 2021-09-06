@@ -2,13 +2,13 @@ package com.faramiki.humiditywhatch
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import androidx.fragment.app.Fragment
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
+import com.faramiki.humiditywhatch.ui.TabAdapter
+import com.faramiki.humiditywhatch.ui.TabConfigurationStrategy
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,8 +21,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel.weatherDataRepoStatus.observe(this, { newValue -> showRepoStatus(newValue) })
 
         initViews()
+    }
+
+    private fun showRepoStatus(newValue: Boolean) {
+        if(!newValue)
+        {
+            Toast.makeText(this, "Could not load values!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun initViews() {

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.faramiki.humiditywhatch.entities.WeatherDataPoint
+import com.faramiki.humiditywhatch.ui.ChartValueSelectedListener
 import com.faramiki.humiditywhatch.utilsTest.toDateStrFromEpochHours
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis

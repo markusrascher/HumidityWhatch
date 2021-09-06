@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectPlainTextFileTypeManager">
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/faramiki/humiditywhatch/main/WeatherDataPoint.kt" />
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Daten/Luefter_Keller_App/HumidityWhatch/app/src/main/res/layout/activity_main.xml" value="0.20520833333333333" />
+        <entry key="..\:/Daten/Luefter_Keller_App/HumidityWhatch/app/src/main/res/layout/current_values_fragment.xml" value="0.20520833333333333" />
+        <entry key="..\:/Daten/Luefter_Keller_App/HumidityWhatch/app/src/main/res/layout/date_select_fragment.xml" value="0.20520833333333333" />
+        <entry key="..\:/Daten/Luefter_Keller_App/HumidityWhatch/app/src/main/res/layout/hum_rel_fragment.xml" value="0.20520833333333333" />
+        <entry key="..\:/Daten/Luefter_Keller_App/HumidityWhatch/app/src/main/res/layout/temperature_fragment.xml" value="0.20520833333333333" />
+      </map>
+    </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />

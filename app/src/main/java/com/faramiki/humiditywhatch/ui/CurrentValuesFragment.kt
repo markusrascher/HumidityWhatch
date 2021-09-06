@@ -1,13 +1,14 @@
-package com.faramiki.humiditywhatch
+package com.faramiki.humiditywhatch.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.faramiki.humiditywhatch.MainViewModel
+import com.faramiki.humiditywhatch.R
 import com.faramiki.humiditywhatch.entities.WeatherDataPoint
 import com.faramiki.humiditywhatch.utilsTest.toDateTimeStrFromEpochHours
 

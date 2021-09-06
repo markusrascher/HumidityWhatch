@@ -18,9 +18,12 @@ class MainViewModel : ViewModel()
     private var rangeFromEpochHours: MutableLiveData<Long> = MutableLiveData()
     private var rangeToEpochHours:  MutableLiveData<Long> = MutableLiveData()
     private var selectedValue: MutableLiveData<WeatherDataPoint?> = MutableLiveData()
+    var weatherDataRepoStatus: LiveData<Boolean>
 
     init {
         weatherDataRepository = WeatherDataRepository()
+        weatherDataRepoStatus = weatherDataRepository!!.getStatus()
+
         weatherData = weatherDataRepository!!.getLoadedValues()
 
         rangeFromEpochHours.value = LocalDate.now().toEpochHours()

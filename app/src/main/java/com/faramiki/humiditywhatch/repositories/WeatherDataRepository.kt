@@ -2,9 +2,9 @@ package com.faramiki.humiditywhatch.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.faramiki.humiditywhatch.Fals22ApiClient
 import com.faramiki.humiditywhatch.entities.Fals22DataModel
 import com.faramiki.humiditywhatch.entities.WeatherDataPoint
+import com.faramiki.humiditywhatch.network.Fals22ApiClient
 import com.faramiki.humiditywhatch.network.RetrofitFals22Interface
 import com.faramiki.humiditywhatch.utilsTest.toEpochHours
 import retrofit2.Call
@@ -17,7 +17,8 @@ class WeatherDataRepository {
     private var fals22Interface: RetrofitFals22Interface? = null
     private var loadedWeatherDataPoints: MutableLiveData<List<WeatherDataPoint>>
         = MutableLiveData(listOf())
-    private var loadedWeatherDataPointsInternal: MutableList<WeatherDataPoint> = mutableListOf()
+    var loadedWeatherDataPointsInternal: MutableList<WeatherDataPoint> = mutableListOf()
+    private var status: MutableLiveData<Boolean> = MutableLiveData(true)
 
     init {
         fals22Interface = Fals22ApiClient.getApiClient().create(RetrofitFals22Interface::class.java)
@@ -40,11 +41,15 @@ class WeatherDataRepository {
         }
     }
 
+    fun getStatus(): LiveData<Boolean>{
+        return status
+    }
+
     private fun loadWeatherDataPointsFromWeb(day: LocalDate) {
         fals22Interface?.getDataPoints("10342", day.toString())?.enqueue(object : Callback<List<Fals22DataModel>> {
 
             override fun onFailure(call: Call<List<Fals22DataModel>>, t: Throwable) {
-
+                status.value = false
             }
 
             override fun onResponse(
@@ -54,7 +59,6 @@ class WeatherDataRepository {
 
                 val res = response.body()
                 if (response.code() == 200 &&  res!=null) {
-
 
                     res.forEach {
                             value ->
@@ -68,6 +72,10 @@ class WeatherDataRepository {
                     }
                     loadedWeatherDataPointsInternal.sortBy { it.timestamp }
                     loadedWeatherDataPoints.value = loadedWeatherDataPointsInternal
+                    status.value = true
+                }
+                else{
+                    status.value = false
                 }
             }
         })
